@@ -9,7 +9,7 @@ I used data made available by airbus on Kaggle. The challenge name is ["Airbus S
 
 The second version of data is organised as :
 * A train folder with about 192 550 images,
-* A test folder with aout 15 600 images,
+* A test folder with about 15 600 images,
 * A csv file named "train_ship_segmentations_v2.csv" with the mask of all train images,
 * A csv file named "sample_submission_v2.csv" to show the shape of the output expected.
 
