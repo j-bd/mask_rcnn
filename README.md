@@ -1,3 +1,5 @@
+MODIFICATION ON GOING August 2019
+
 # Implementation of Mask RCNN
 
 You will find here a test application of M-RCNN deep learning method to an images detection challenge.
