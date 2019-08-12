@@ -16,15 +16,8 @@ The second version of data is organised as :
 * A csv file named "sample_submission_v2.csv" to show the shape of the output expected.
 
 
-## Global organisation of the repository
-
-The folder **mrcnn** gather the heart of the Mask RCNN functioning. It comes from the great work of [Mask R-CNN library](https://github.com/matterport/Mask_RCNN) that Matterport built.
-
-The files ```learning_ship.py``` and ```ship_detection.py``` are mostly from the work of [gabrielgarza](https://github.com/gabrielgarza/Mask_RCNN/tree/master/samples/ship)
-
-Finally, the file ```data_preprocessing.py``` is the one I did in order to select few images in each Airbus *test* and *train* folders. Indeed, as I worked on a weak computer, I could not allow to train the model on the full data. Anyway, the aim was to understand the full process.
-
-
 ## Overview of Mask-RCNN pipeline
 
 ![Image of mrcnn](https://cdn-images-1.medium.com/max/2600/1*M_ZhHp8OXzWxEsfWu2e5EA.png)
+
+Mask-RCNN [paper](https://arxiv.org/pdf/1703.06870.pdf) were submitt on 20 Mar 2017
