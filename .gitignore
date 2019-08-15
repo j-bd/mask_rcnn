@@ -2,3 +2,5 @@ data/*
 *.h5
 .ipynb_checkpoints
 README.ipynb
+old
+__pycache__
