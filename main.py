@@ -25,10 +25,9 @@ def pre_trainning():#args
 #    OBJ_NBR = 1
 #    TEST_IMAGES_DIR = PROJECT_DIR + "detect_results/obj/"
 
-    ship_functions.structure(PROJECT_DIR,TRAIN_IMAGES_DIR, BACKUP)
+    weight_path = ship_functions.structure(PROJECT_DIR,TRAIN_IMAGES_DIR, BACKUP)
 
-    config = ship_config.ShipConfig()
-    config.display()
+    ship_functions.configuration(weight_path, BACKUP)
 
 def main():
     '''Allow the selection between algorithm training or image detection'''
