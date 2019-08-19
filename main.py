@@ -38,12 +38,15 @@ def pre_trainning():#args + renommer
     ORIGIN_TEST_DIR = ORIGIN_DIR + "test_v2/"
     PROJECT_DIR = "/home/latitude/Documents/Kaggle/airbus_ship/m_rcnn/"
 #    TRAIN_DATA_DIR = PROJECT_DIR + "data/"
-#    TRAIN_IMAGES_DIR = PROJECT_DIR + "data/"
+    TRAIN_IMAGES_DIR = PROJECT_DIR + "data/"
     BACKUP = PROJECT_DIR + "backup_log/"
 #    FILE_TRAIN = "stage_2_train_labels.csv"
 #    IMAGE_SIZE = 1024
 #    OBJ_NBR = 1
 #    TEST_IMAGES_DIR = PROJECT_DIR + "detect_results/obj/"
+
+    input(f"[INFO] Please, clone mrcnn repository in '{PROJECT_DIR}' if"\
+          "necessary. Once it is done, please press 'enter'")
 
     weight_path = ship_functions.structure(PROJECT_DIR,TRAIN_IMAGES_DIR, BACKUP)
 

@@ -48,15 +48,22 @@ def structure(proj_dir, train_images_dir, backup):
     '''Create the structure for the project and downoald necessary file'''
     os.makedirs(proj_dir, exist_ok=True)
     os.makedirs(train_images_dir, exist_ok=True)
+    os.makedirs(train_images_dir + 'train', exist_ok=True)
+    os.makedirs(train_images_dir + 'val', exist_ok=True)
     os.makedirs(backup, exist_ok=True)
-
-    print(f"[INFO] Please, clone mrcnn repository in '{proj_dir}' if necessary.")
 
 #A integrer dans def configuration dependemment du choix : coco, imagenet, reprendre a partir d'un autre fichier
     weights_path = proj_dir + "coco_trained_weights.h5"
     utils.download_trained_weights(weights_path)
 
     return weights_path
+
+def images_copy(dataset, percent_images, val_size=0.2):
+    '''Copy images for the training
+    dataset: A pandas dataset is provided,
+    percent_images: A percent of images to copy from Kaggle folder to project
+    val_size: percent of val images'''
+
 
 def configuration(logs_path, weights_path):
     '''Configure the MRCNN algorithme for the training'''
