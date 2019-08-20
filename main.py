@@ -45,16 +45,21 @@ def pre_trainning():#args + renommer
 #    OBJ_NBR = 1
 #    TEST_IMAGES_DIR = PROJECT_DIR + "detect_results/obj/"
 
-    input(f"[INFO] Please, clone mrcnn repository in '{PROJECT_DIR}' if"\
+    input(f"[INFO] Please, clone mrcnn repository in '{PROJECT_DIR}' if "\
           "necessary. Once it is done, please press 'enter'")
 
-    weight_path = ship_functions.structure(PROJECT_DIR,TRAIN_IMAGES_DIR, BACKUP)
+    weight_path = ship_functions.structure(PROJECT_DIR, TRAIN_IMAGES_DIR, BACKUP)
+    ship_functions.images_copy(ORIGIN_DIR + FILE_DESCR,
+                               ORIGIN_TRAIN_DIR,
+                               TRAIN_IMAGES_DIR,
+                               percent_images=0.02,
+                               val_size=0.2)
 
     ship_functions.configuration(BACKUP, weight_path)
 
 def main():
     '''Allow the selection between algorithm training or image detection'''
-    args = ship_functions.create_parser()
+#    args = ship_functions.create_parser()
     pre_trainning()
 
 if __name__ == "__main__":
