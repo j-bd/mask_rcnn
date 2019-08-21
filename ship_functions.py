@@ -96,6 +96,8 @@ def images_copy(csv_file, o_folder, p_folder, percent_images=1, val_size=0.2):
     images_transfert(X_train, o_folder, p_folder + "train/")
     images_transfert(X_val, o_folder, p_folder + "val/")
 
+    return X_train, X_val
+
 def configuration(logs_path, weights_path):
     '''Configure the MRCNN algorithme for the training'''
     config = ship_config.ShipConfig()

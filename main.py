@@ -18,10 +18,13 @@ Step 3: We create the structure of the project. We need:
 Step 4: We need a pre-trained weights file. If we choose Coco or Imagenet, we can
 download it with provided commands (thanks !). We can also used a last file (for
 instance, if we want to resume a training)
-Step 5: We charge the configuration file create in step 2
-Step 6: We instantiate the MaskRCNN Class present in mrcnn/model.py
-Step 7: We load the pre-trained weights file. See step 4
-Step 8: We instantiate the ShipDataset class (based on Dataset class in
+Step 5: We organised images between "train" and "val" (validation) folders. We
+offer the possibility to choose the amount of data while respecting the ratio
+between images with and without mask
+Step 6: We charge the configuration file create in step 2
+Step 7: We instantiate the MaskRCNN Class present in mrcnn/model.py
+Step 8: We load the pre-trained weights file. See step 4
+Step 9: We instantiate the ShipDataset class (based on Dataset class in
 mrcnn/utils.py) for:
     managing training data
     managing validation data
@@ -49,18 +52,20 @@ def pre_trainning():#args + renommer
           "necessary. Once it is done, please press 'enter'")
 
     weight_path = ship_functions.structure(PROJECT_DIR, TRAIN_IMAGES_DIR, BACKUP)
-    ship_functions.images_copy(ORIGIN_DIR + FILE_DESCR,
-                               ORIGIN_TRAIN_DIR,
-                               TRAIN_IMAGES_DIR,
-                               percent_images=0.02,
-                               val_size=0.2)
+    train_data, val_data = ship_functions.images_copy(ORIGIN_DIR + FILE_DESCR,
+                                                      ORIGIN_TRAIN_DIR,
+                                                      TRAIN_IMAGES_DIR,
+                                                      percent_images=0.02,
+                                                      val_size=0.2)
 
     ship_functions.configuration(BACKUP, weight_path)
 
 def main():
     '''Allow the selection between algorithm training or image detection'''
 #    args = ship_functions.create_parser()
+#    il args.choix = training:
     pre_trainning()
+#    else: (detection)
 
 if __name__ == "__main__":
     main()
