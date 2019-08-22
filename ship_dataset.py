@@ -6,10 +6,13 @@ Created on Tue Aug 20 15:05:17 2019
 @author: j-bd
 """
 import numpy as np
+import matplotlib.pyplot as plt
+import cv2
 
 from mrcnn import utils
 
-class ShipDataset(utils):
+
+class ShipDataset(utils.Dataset):
     '''class to manage the data for the training process with mrcnn'''
     def load_ship(self, dataset_dir, subset):
         ''' Reads pandas dataframe, extracts the annotations, and iteratively
@@ -27,6 +30,7 @@ class ShipDataset(utils):
                            height=768,
                            img_masks=img_masks)
 
+
     def load_mask(self, image_id):
         '''Generates bitmap masks for every object in the image by drawing the
         polygons.'''
@@ -35,25 +39,25 @@ class ShipDataset(utils):
         if info["source"] != "ship":
             return super(self.__class__, self).load_mask(image_id)
 
-        # Convert RLE Encoding to bitmap mask of shape [height, width, instance count]
+        # Convert polygons to a bitmap mask of shape
         info = self.image_info[image_id]
         shape = [info["height"], info["width"]]
 
-        # Mask array placeholder
         mask_array = np.zeros(
             [info["height"], info["width"], len(info["img_masks"])],
             dtype=np.uint8)
 
         for index, mask in enumerate(info["img_masks"]):
             mask_array[:, :, index] = self.mask_creation(mask, shape)
-#
+
+        # Mask + class of the Mask (here, we have only one class)
         return mask_array.astype(np.bool), np.ones([mask_array.shape[-1]], dtype=np.int32)
+
 
     def mask_creation(self, mask_encode, shape=(768, 768)):
         '''Create a mask from airbus string information to a numpy array'''
         img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
         if not isinstance(mask_encode, str):
-#
             return img.reshape(shape).T
 
         mask_split = mask_encode.split()
