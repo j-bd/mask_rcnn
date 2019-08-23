@@ -40,13 +40,8 @@ def pre_trainning():#args + renommer
     FILE_DESCR = "train_ship_segmentations_v2.csv"
     ORIGIN_TEST_DIR = ORIGIN_DIR + "test_v2/"
     PROJECT_DIR = "/home/latitude/Documents/Kaggle/airbus_ship/m_rcnn/"
-#    TRAIN_DATA_DIR = PROJECT_DIR + "data/"
     TRAIN_IMAGES_DIR = PROJECT_DIR + "data/"
     BACKUP = PROJECT_DIR + "backup_log/"
-#    FILE_TRAIN = "stage_2_train_labels.csv"
-#    IMAGE_SIZE = 1024
-#    OBJ_NBR = 1
-#    TEST_IMAGES_DIR = PROJECT_DIR + "detect_results/obj/"
 
     input(f"[INFO] Please, clone mrcnn repository in '{PROJECT_DIR}' if "\
           "necessary. Once it is done, please press 'enter'")
@@ -58,12 +53,18 @@ def pre_trainning():#args + renommer
                                                       percent_images=0.02,
                                                       val_size=0.2)
 
-    ship_functions.configuration(BACKUP, weight_path)
+    ship_model, config = ship_functions.configuration(BACKUP, weight_path)
+
+    ship_functions.launch_training(TRAIN_IMAGES_DIR,
+                                   train_data,
+                                   val_data,
+                                   ship_model,
+                                   config)
 
 def main():
-    '''Allow the selection between algorithm training or image detection'''
+    '''Allow the selection between training algorithm or image detection'''
 #    args = ship_functions.create_parser()
-#    il args.choix = training:
+#    if args.choix = train:
     pre_trainning()
 #    else: (detection)
 

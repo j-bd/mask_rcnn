@@ -114,7 +114,27 @@ def configuration(logs_path, weights_path):
         "mrcnn_class_logits", "mrcnn_bbox_fc",
         "mrcnn_bbox", "mrcnn_mask"])
 
-    return ship_model
+    return ship_model, config
+
+
+def launch_training(dataset_dir, train, val, model, config):
+    '''Launch Mask RCNN training'''
+    # Training dataset.
+    dataset_train = ship_dataset.ShipDataset()
+    dataset_train.load_ship(dataset_dir + "train/", train)
+    dataset_train.prepare()
+
+    # Validation dataset
+    dataset_val = ship_dataset.ShipDataset()
+    dataset_val.load_ship(dataset_dir + "val/", val)
+    dataset_val.prepare()
+
+    # Beginning of the training
+    print("Training network heads")
+    model.train(dataset_train, dataset_val,
+                learning_rate=config.LEARNING_RATE,
+                epochs=110,
+                layers='heads')
 
 
 def display_elements(im_dir, dataset, im_index):
