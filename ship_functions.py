@@ -24,8 +24,8 @@ import ship_dataset
 def create_parser():
     '''Get the informations from the operator'''
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--training",
-                        help="command to prepare data in order to lauch mrcnn training")
+    parser.add_argument("-t", "--train",
+                        help="command to prepare data in order to launch mrcnn training")
     parser.add_argument("-of", "--origin_folder", required=True,
                         help="path to the Kaggle folder containing all data")
     parser.add_argument("-pf", "--project_folder", required=True,
@@ -51,6 +51,7 @@ def create_parser():
     args = parser.parse_args()
     return args
 
+
 def structure(proj_dir, train_images_dir, backup):
     '''Create the structure for the project and downoald necessary file'''
     os.makedirs(proj_dir, exist_ok=True)
@@ -66,6 +67,7 @@ def structure(proj_dir, train_images_dir, backup):
 
     return weights_path
 
+
 def images_transfert(dataset, o_folder, f_folder):
     '''Copy selected images from a folder to another one'''
     filelist = list()
@@ -76,6 +78,7 @@ def images_transfert(dataset, o_folder, f_folder):
     for file in filelist:
         shutil.copy2(file, f_folder)
     print("[INFO] Copy is done.")
+
 
 def images_copy(csv_file, o_folder, p_folder, percent_images=1, val_size=0.2):
     '''Copy images for the training with respected proportion
@@ -99,6 +102,7 @@ def images_copy(csv_file, o_folder, p_folder, percent_images=1, val_size=0.2):
     images_transfert(X_val, o_folder, p_folder + "val/")
 
     return X_train, X_val
+
 
 def configuration(logs_path, weights_path):
     '''Configure the MRCNN algorithme for the training'''
@@ -138,7 +142,7 @@ def launch_training(dataset_dir, train, val, model, config):
 
 
 def display_elements(im_dir, dataset, im_index):
-    '''Display the image choosen with matplotlib'''
+    '''Display the image choosen and mask (if present) with matplotlib'''
     temp_config = ship_config.ShipConfig()
     temp_dataset = ship_dataset.ShipDataset()
     temp_dataset.load_ship(im_dir, dataset)

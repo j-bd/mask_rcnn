@@ -6,8 +6,6 @@ Created on Tue Aug 20 15:05:17 2019
 @author: j-bd
 """
 import numpy as np
-import matplotlib.pyplot as plt
-import cv2
 
 from mrcnn import utils
 
@@ -58,7 +56,7 @@ class ShipDataset(utils.Dataset):
         '''Create a mask from airbus string information to a numpy array'''
         img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
         if not isinstance(mask_encode, str):
-            return img.reshape(shape).T
+            return img.reshape(shape)
 
         mask_split = mask_encode.split()
         starts, lengths = [np.asarray(
