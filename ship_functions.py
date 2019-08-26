@@ -24,23 +24,21 @@ import ship_dataset
 def create_parser():
     '''Get the informations from the operator'''
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--train",
-                        help="command to prepare data in order to launch mrcnn training")
+    parser.add_argument("-c", "--command", required=True,
+                        help="choice between 'train' and 'detection'")
     parser.add_argument("-of", "--origin_folder", required=True,
                         help="path to the Kaggle folder containing all data")
     parser.add_argument("-pf", "--project_folder", required=True,
                         help="path to your project folder")
-#    parser.add_argument("-b", "--batch", type=int, default=64,
-#                        help="batch number for yolo config file used during yolo training")
-#    parser.add_argument("-s", "--subdivisions", type=int, default=16,
-#                        help="subdivisions number for yolo config file used during yolo training")
+    parser.add_argument("-w", "--weights",
+                        help="Choice between 'coco', 'last', 'imagenet', or"\
+                        "the path to a weights file usedusable by mrcnn algorithm"\
+                        "to detect object")
     parser.add_argument("-sr", "--split_rate", type=float, default=0.8,
                         help="split rate between train and validation dataset during"\
                         "mrcnn training")
     parser.add_argument("-d", "--detection",
                         help="command to detect pneumonia object on image")
-    parser.add_argument("-w", "--weights_path",
-                        help="Path to the weights file used by mrcnn algorithm to detect object")
 #    parser.add_argument("-c", "--confidence", type=float, default=0.2,
 #                        help="minimum probability to filter weak detections")
 #    parser.add_argument("-t", "--threshold", type=float, default=0.2,
@@ -59,13 +57,6 @@ def structure(proj_dir, train_images_dir, backup):
     os.makedirs(train_images_dir + 'train', exist_ok=True)
     os.makedirs(train_images_dir + 'val', exist_ok=True)
     os.makedirs(backup, exist_ok=True)
-
-#A integrer dans def configuration dependemment du choix :
-# coco, imagenet, reprendre a partir d'un autre fichier
-    weights_path = proj_dir + "coco_trained_weights.h5"
-    utils.download_trained_weights(weights_path)
-
-    return weights_path
 
 
 def images_transfert(dataset, o_folder, f_folder):
@@ -104,7 +95,28 @@ def images_copy(csv_file, o_folder, p_folder, percent_images=1, val_size=0.2):
     return X_train, X_val
 
 
-def configuration(logs_path, weights_path):
+def weights_selection(proj_dir, choice):
+    '''Manage the weights file with returning the path after downloading file if
+    necessary'''
+        # Select weights file to load
+    if choice.lower() == "coco":
+        weights_path = proj_dir + "coco_trained_weights.h5"
+        # Download weights file
+        if not os.path.exists(weights_path):
+            utils.download_trained_weights(weights_path)
+    elif choice.lower() == "last":
+        # Find last trained weights
+        weights_path = model.find_last()
+    elif choice.lower() == "imagenet":
+        # Start from ImageNet trained weights
+        weights_path = model.get_imagenet_weights()
+    else:
+        weights_path = choice
+
+    return weights_path
+
+
+def configuration(logs_path, weights_path, weights):
     '''Configure the MRCNN algorithme for the training'''
     config = ship_config.ShipConfig()
     config.display()
@@ -112,11 +124,13 @@ def configuration(logs_path, weights_path):
     ship_model = model.MaskRCNN(mode="training", config=config,
                                 model_dir=logs_path)
 
-    #Seulement vrai pour COCO. A faire pour les autres
-    #Exclude the last layers because they require a matching number of classes
-    ship_model.load_weights(weights_path, by_name=True, exclude=[
-        "mrcnn_class_logits", "mrcnn_bbox_fc",
-        "mrcnn_bbox", "mrcnn_mask"])
+    #Exclude the last COCO layers because they require a matching number of classes
+    if weights.lower() == "coco":
+        ship_model.load_weights(weights_path, by_name=True, exclude=[
+                "mrcnn_class_logits", "mrcnn_bbox_fc",
+                "mrcnn_bbox", "mrcnn_mask"])
+    else:
+        ship_model.load_weights(weights_path, by_name=True)
 
     return ship_model, config
 

@@ -4,3 +4,5 @@ data/*
 README.ipynb
 old
 __pycache__
+command_line
+backup_log/*

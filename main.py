@@ -33,27 +33,30 @@ mrcnn/utils.py) for:
 import ship_functions
 
 
-def pre_trainning():#args + renommer
+def trainning(args):
     '''Lauch all necessary steps to set up Mask RCNN algorithm before trainning'''
-    ORIGIN_DIR = "/media/latitude/TOSHIBA EXT/20180831-Sauvegarde_Toshiba/E/Prog/Kaggle/airbus_ship/airbus-ship-detection/data/"
+    ORIGIN_DIR = args.origin_folder
     ORIGIN_TRAIN_DIR = ORIGIN_DIR + "train_v2/"
     FILE_DESCR = "train_ship_segmentations_v2.csv"
     ORIGIN_TEST_DIR = ORIGIN_DIR + "test_v2/"
-    PROJECT_DIR = "/home/latitude/Documents/Kaggle/airbus_ship/m_rcnn/"
+    PROJECT_DIR = args.project_folder
     TRAIN_IMAGES_DIR = PROJECT_DIR + "data/"
     BACKUP = PROJECT_DIR + "backup_log/"
 
     input(f"[INFO] Please, clone mrcnn repository in '{PROJECT_DIR}' if "\
           "necessary. Once it is done, please press 'enter'")
 
-    weight_path = ship_functions.structure(PROJECT_DIR, TRAIN_IMAGES_DIR, BACKUP)
+    ship_functions.structure(PROJECT_DIR, TRAIN_IMAGES_DIR, BACKUP)
+
     train_data, val_data = ship_functions.images_copy(ORIGIN_DIR + FILE_DESCR,
                                                       ORIGIN_TRAIN_DIR,
                                                       TRAIN_IMAGES_DIR,
                                                       percent_images=0.02,
                                                       val_size=0.2)
 
-    ship_model, config = ship_functions.configuration(BACKUP, weight_path)
+    weight_path = ship_functions.weights_selection(PROJECT_DIR, args.weights)
+
+    ship_model, config = ship_functions.configuration(BACKUP, weight_path, args.weights)
 
     ship_functions.launch_training(TRAIN_IMAGES_DIR,
                                    train_data,
@@ -63,10 +66,13 @@ def pre_trainning():#args + renommer
 
 def main():
     '''Allow the selection between training algorithm or image detection'''
-#    args = ship_functions.create_parser()
-#    if args.choix = train:
-    pre_trainning()
-#    else: (detection)
+    args = ship_functions.create_parser()
+    if args.command == "train":
+        trainning(args)
+#    elif args.command == "detection":
+#        detection()
+    else:
+        print("[INFO] Your choice for '-c', '--command' must be 'train' or 'detection'")
 
 if __name__ == "__main__":
     main()
