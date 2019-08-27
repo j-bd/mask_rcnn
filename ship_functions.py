@@ -13,6 +13,7 @@ import shutil
 
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import skimage.io
 
 from mrcnn import utils
 from mrcnn import model
@@ -30,33 +31,21 @@ def create_parser():
                         help="path to the Kaggle folder containing all data")
     parser.add_argument("-pf", "--project_folder", required=True,
                         help="path to your project folder")
-    parser.add_argument("-w", "--weights",
+    parser.add_argument("-w", "--weights", required=True,
                         help="Choice between 'coco', 'last', 'imagenet', or"\
                         "the path to a weights file usedusable by mrcnn algorithm"\
                         "to detect object")
     parser.add_argument("-sr", "--split_rate", type=float, default=0.8,
                         help="split rate between train and validation dataset during"\
                         "mrcnn training")
-    parser.add_argument("-d", "--detection",
-                        help="command to detect pneumonia object on image")
-#    parser.add_argument("-c", "--confidence", type=float, default=0.2,
-#                        help="minimum probability to filter weak detections")
-#    parser.add_argument("-t", "--threshold", type=float, default=0.2,
-#                        help="threshold when applying non-maxima suppression")
-#    parser.add_argument("-dis", "--detect_im_size", type=int, default=640,
-#                        help="resize input image to improve the detection"\
-#                        "(must be a multiple of 32)")
     args = parser.parse_args()
     return args
 
 
-def structure(proj_dir, train_images_dir, backup):
+def structure(folder_list):
     '''Create the structure for the project and downoald necessary file'''
-    os.makedirs(proj_dir, exist_ok=True)
-    os.makedirs(train_images_dir, exist_ok=True)
-    os.makedirs(train_images_dir + 'train', exist_ok=True)
-    os.makedirs(train_images_dir + 'val', exist_ok=True)
-    os.makedirs(backup, exist_ok=True)
+    for name in folder_list :
+        os.makedirs(name, exist_ok=True)
 
 
 def images_transfert(dataset, o_folder, f_folder):
@@ -116,7 +105,7 @@ def weights_selection(proj_dir, choice):
     return weights_path
 
 
-def configuration(logs_path, weights_path, weights):
+def train_configuration(logs_path, weights_path, weights):
     '''Configure the MRCNN algorithme for the training'''
     config = ship_config.ShipConfig()
     config.display()
@@ -153,6 +142,33 @@ def launch_training(dataset_dir, train, val, model, config):
                 learning_rate=config.LEARNING_RATE,
                 epochs=110,
                 layers='heads')
+
+
+def detect_configuration(result_folder, weights_path):
+    '''Configure the MRCNN algorithme for the training'''
+    config = ship_config.ShipConfig()
+    config.display()
+
+    ship_model = model.MaskRCNN(mode="inference", config=config,
+                                model_dir=result_folder)
+
+    ship_model.load_weights(weights_path, by_name=True)
+
+    return ship_model, config
+
+
+def ship_detection(images_file, images_dir):
+    '''Detect ships in image'''
+    dataset = pd.read_csv(images_file)
+    images_to_detect = list()
+    for image_name in dataset.iloc[:, 0].unique():
+        images_to_detect.append(images_dir + image_name)
+
+    for image_path in images_to_detect:
+        image = skimage.io.imread(image_path)
+        results = model.detect([image], verbose=1)
+        r = results[0]
+
 
 
 def display_elements(im_dir, dataset, im_index):
