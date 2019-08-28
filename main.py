@@ -48,8 +48,10 @@ def detection(args):
 
     ship_functions.structure([PROJECT_DIR, DETECTION])
     ship_model, config = ship_functions.detect_configuration(DETECTION, args.weights)
-    ship_functions.ship_detection(ORIGIN_DIR + FILE_CONT,
-                                  ORIGIN_TEST_DIR)
+    result = ship_functions.ship_detection(ORIGIN_DIR + FILE_CONT,
+                                  ORIGIN_TEST_DIR,
+                                  ship_model)
+    ship_functions.export_result(result, DETECTION)
 
 
 def trainning(args):

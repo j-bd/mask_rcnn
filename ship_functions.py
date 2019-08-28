@@ -12,6 +12,7 @@ import argparse
 import shutil
 
 from sklearn.model_selection import train_test_split
+import numpy as np
 import pandas as pd
 import skimage.io
 
@@ -124,7 +125,7 @@ def train_configuration(logs_path, weights_path, weights):
     return ship_model, config
 
 
-def launch_training(dataset_dir, train, val, model, config):
+def launch_training(dataset_dir, train, val, local_model, config):
     '''Launch Mask RCNN training'''
     # Training dataset.
     dataset_train = ship_dataset.ShipDataset()
@@ -138,7 +139,7 @@ def launch_training(dataset_dir, train, val, model, config):
 
     # Beginning of the training
     print("Training network heads")
-    model.train(dataset_train, dataset_val,
+    local_model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
                 epochs=110,
                 layers='heads')
@@ -157,18 +158,40 @@ def detect_configuration(result_folder, weights_path):
     return ship_model, config
 
 
-def ship_detection(images_file, images_dir):
+def mask_analyse(mask):
+    '''Analyse the mrcnn mask result and return a string if exist'''
+    # We're treating all instances as one, so collapse the mask into one layer
+    mask = (np.sum(mask, -1, keepdims=True) >= 1)
+    if mask.shape[0] > 0:
+        print("[INFO]: Ship(s) detected")
+        pixels = mask.T.flatten()
+        pixels = np.concatenate([[0], pixels, [0]])
+        ships = np.where(pixels[1:] != pixels[:-1])[0] + 1
+        ships[1::2] -= ships[::2]
+        return ' '.join(str(x) for x in ships)
+    else:
+        return None
+
+
+def ship_detection(images_file, images_dir, local_model):
     '''Detect ships in image'''
     dataset = pd.read_csv(images_file)
-    images_to_detect = list()
-    for image_name in dataset.iloc[:, 0].unique():
-        images_to_detect.append(images_dir + image_name)
-
-    for image_path in images_to_detect:
+    results = list()
+    for image_name in dataset.iloc[:8, 0].unique():
+        print("[INFO]: The following image is analysed", image_name)
+        image_path = images_dir + image_name
         image = skimage.io.imread(image_path)
-        results = model.detect([image], verbose=1)
-        r = results[0]
+        res_detection = local_model.detect([image], verbose=1)[0]["masks"]
+        mask_encoded = mask_analyse(res_detection)
+        results.append([image_name, mask_encoded])
 
+    return results
+
+
+def export_result(list_results, folder):
+    '''Export results under csv format the results'''
+    dataset = pd.DataFrame(np.array(list_results), columns=['ImageId', 'EncodedPixels'])
+    dataset.to_csv(folder + "submission.csv", index=False)
 
 
 def display_elements(im_dir, dataset, im_index):
