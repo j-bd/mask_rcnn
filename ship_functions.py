@@ -162,7 +162,8 @@ def mask_analyse(mask):
     '''Analyse the mrcnn mask result and return a string if exist'''
     # We're treating all instances as one, so collapse the mask into one layer
     mask = (np.sum(mask, -1, keepdims=True) >= 1)
-    if mask.shape[0] > 0:
+
+    if True in mask:
         print("[INFO]: Ship(s) detected")
         pixels = mask.T.flatten()
         pixels = np.concatenate([[0], pixels, [0]])
@@ -176,14 +177,17 @@ def mask_analyse(mask):
 def ship_detection(images_file, images_dir, local_model):
     '''Detect ships in image'''
     dataset = pd.read_csv(images_file)
+    count = 1
     results = list()
-    for image_name in dataset.iloc[:8, 0].unique():
-        print("[INFO]: The following image is analysed", image_name)
+    for image_name in dataset.iloc[:, 0].unique():
+        print(f"[INFO]: {count} / {len(dataset.iloc[:, 0].unique())} \n"
+            "The following image is analysed:", image_name)
         image_path = images_dir + image_name
         image = skimage.io.imread(image_path)
-        res_detection = local_model.detect([image], verbose=1)[0]["masks"]
+        res_detection = local_model.detect([image], verbose=0)[0]["masks"]
         mask_encoded = mask_analyse(res_detection)
         results.append([image_name, mask_encoded])
+        count += 1
 
     return results
 
