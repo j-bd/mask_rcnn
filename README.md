@@ -29,7 +29,7 @@ The following steps are necessary:
 * Step 1: Clone [Mask RCNN repository](https://github.com/matterport/Mask_RCNN)
 * Step 2: As mentionned by authors, we need first to create a sub-class config
 based on ```mrcnn/config.py```. **It will be not automatically implemented here**. Thus, we create an inherit class and customed it following our computer capacity. This file is ```ship_config.py```
-* Step 3: As also mentionned by authors, we need to customize the ```class Dataset``` based on the one present in algorithm ```utils.py```. **It will be not automatically implemented here**.Thus, we create an inherit class and customed it in order to manage images and the mask linked to. This file is ```ship_dataset.py``
+* Step 3: As also mentionned by authors, we need to customize the ```class Dataset``` based on the one present in algorithm ```utils.py```. **It will be not automatically implemented here**.Thus, we create an inherit class and customed it in order to manage images and the mask linked to. This file is ```ship_dataset.py```
 * Step 4: We create the structure of the project. We need:
    * A master project folder (PROJECT_DIR),
    * A sub-folder 'train' with all training images,
@@ -79,7 +79,7 @@ To lauch detection:
 
 ## Exemple
 
-
+![Image of detection](https://raw.githubusercontent.com/j-bd/mask_rcnn/master/detec.png)
 
 
 ## Citation
