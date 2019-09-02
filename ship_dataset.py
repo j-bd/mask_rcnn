@@ -29,6 +29,22 @@ class ShipDataset(utils.Dataset):
                            img_masks=img_masks)
 
 
+    def mask_creation(self, mask_encode, shape=(768, 768)):
+        '''Create a mask from airbus string information to a numpy array'''
+        img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
+        if not isinstance(mask_encode, str):
+            return img.reshape(shape)
+
+        mask_split = mask_encode.split()
+        starts, lengths = [np.asarray(
+            x, dtype=int) for x in (mask_split[0::2], mask_split[1::2])]
+        starts -= 1
+        ends = starts + lengths
+        for start, end in zip(starts, ends):
+            img[start:end] = 1
+        return img.reshape(shape).T
+
+
     def load_mask(self, image_id):
         '''Generates bitmap masks for every object in the image by drawing the
         polygons.'''
@@ -50,19 +66,3 @@ class ShipDataset(utils.Dataset):
 
         # Mask + class of the Mask (here, we have only one class)
         return mask_array.astype(np.bool), np.ones([mask_array.shape[-1]], dtype=np.int32)
-
-
-    def mask_creation(self, mask_encode, shape=(768, 768)):
-        '''Create a mask from airbus string information to a numpy array'''
-        img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
-        if not isinstance(mask_encode, str):
-            return img.reshape(shape)
-
-        mask_split = mask_encode.split()
-        starts, lengths = [np.asarray(
-            x, dtype=int) for x in (mask_split[0::2], mask_split[1::2])]
-        starts -= 1
-        ends = starts + lengths
-        for start, end in zip(starts, ends):
-            img[start:end] = 1
-        return img.reshape(shape).T

@@ -45,7 +45,7 @@ def create_parser():
 
 def structure(folder_list):
     '''Create the structure for the project and downoald necessary file'''
-    for name in folder_list :
+    for name in folder_list:
         os.makedirs(name, exist_ok=True)
 
 
@@ -117,8 +117,8 @@ def train_configuration(logs_path, weights_path, weights):
     #Exclude the last COCO layers because they require a matching number of classes
     if weights.lower() == "coco":
         ship_model.load_weights(weights_path, by_name=True, exclude=[
-                "mrcnn_class_logits", "mrcnn_bbox_fc",
-                "mrcnn_bbox", "mrcnn_mask"])
+            "mrcnn_class_logits", "mrcnn_bbox_fc",
+            "mrcnn_bbox", "mrcnn_mask"])
     else:
         ship_model.load_weights(weights_path, by_name=True)
 
@@ -140,9 +140,9 @@ def launch_training(dataset_dir, train, val, local_model, config):
     # Beginning of the training
     print("Training network heads")
     local_model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE,
-                epochs=110,
-                layers='heads')
+                      learning_rate=config.LEARNING_RATE,
+                      epochs=110,
+                      layers='heads')
 
 
 def detect_configuration(result_folder, weights_path):
@@ -181,7 +181,7 @@ def ship_detection(images_file, images_dir, local_model):
     results = list()
     for image_name in dataset.iloc[:, 0].unique():
         print(f"[INFO]: {count} / {len(dataset.iloc[:, 0].unique())} \n"
-            "The following image is analysed:", image_name)
+              "The following image is analysed:", image_name)
         image_path = images_dir + image_name
         image = skimage.io.imread(image_path)
         res_detection = local_model.detect([image], verbose=0)[0]["masks"]

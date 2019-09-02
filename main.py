@@ -33,8 +33,8 @@ def detection(args):
     ship_functions.structure([PROJECT_DIR, DETECTION])
     ship_model, config = ship_functions.detect_configuration(DETECTION, args.weights)
     result = ship_functions.ship_detection(ORIGIN_DIR + FILE_CONT,
-                                  ORIGIN_TEST_DIR,
-                                  ship_model)
+                                           ORIGIN_TEST_DIR,
+                                           ship_model)
     ship_functions.export_result(result, DETECTION)
 
 
@@ -51,10 +51,10 @@ def trainning(args):
           "necessary. Once it is done, please press 'enter'")
 
     ship_functions.structure([PROJECT_DIR,
-                             TRAIN_IMAGES_DIR,
-                             BACKUP,
-                             TRAIN_IMAGES_DIR + 'train',
-                             TRAIN_IMAGES_DIR + 'val'])
+                              TRAIN_IMAGES_DIR,
+                              BACKUP,
+                              TRAIN_IMAGES_DIR + 'train',
+                              TRAIN_IMAGES_DIR + 'val'])
 
     train_data, val_data = ship_functions.images_copy(ORIGIN_DIR + FILE_DESCR,
                                                       ORIGIN_TRAIN_DIR,
