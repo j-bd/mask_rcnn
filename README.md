@@ -36,7 +36,7 @@ based on ```mrcnn/config.py```. **It will be not automatically implemented here*
    * A sub-folder 'val' with all validation images,
    * A sub-folder 'backup_log' that will gather training logs during proceding (BACKUP).
 * Step 5: We need a pre-trained weights file. If we choose Coco or Imagenet, we can
-download it with provided commands (thanks to thte mrcnn authors!). We need to mention it when launching the training. We can also used a last file (for instance, if we want to resume a training)
+download it with provided commands (thanks to thte mrcnn authors!). We need to mention it when launching the training. We can also use a last file (for instance, if we want to resume a training)
 * Step 6: We organised images between "train" and "val" (validation) folders. We
 offer the possibility to choose the amount of data while respecting the ratio
 between images with and without mask
@@ -59,7 +59,7 @@ Before launching this algorithm make sure the Kaggle data are organized as follo
 * A detailed CSV file train labels named 'train_ship_segmentations_v2',
 * A detailed CSV file for submission named 'sample_submission_v2'.
 
-All this elements must be gather in the same directory. The path will be mentionned when launching the algorithm.
+All this elements must be gathered in the same directory. The path will be mentionned when launching the algorithm.
 
 
 ## Terminal commands
@@ -67,13 +67,13 @@ All this elements must be gather in the same directory. The path will be mention
 For all commands, please make sure to be located in the project folder.
 
 To launch the training process:
-* ```python main.py -c train -of "/path/to/kaggle/data/folder/" -pf "/path/to/your/project/folder/" -w "/path/to/your/file.h5"```
+* ```python main.py --command train --origin_folder "/path/to/kaggle/data/folder/" --project_folder "/path/to/your/project/folder/" --weights "/path/to/your/file.h5"```
 * All these arguments are mandatory. Regarding the weights choice ```-w ```, You either can provide:
-  * the path to a file ```wights.h5```
+  * the path to a file ```weights.h5```
   * or enter ```coco``` or ```imagenet``` to make automaticaly downloading
 
 To lauch detection:
-* ```python main.py -c detection -of "/path/to/kaggle/data/folder/" -pf "/path/to/your/project/folder/" -w "/path/to/your/file.h5"```
+* ```python main.py --command detection --origin_folder "/path/to/kaggle/data/folder/" --project_folder "/path/to/your/project/folder/" --weights "/path/to/your/file.h5"```
 * All these arguments are mandatory.
 
 
@@ -84,11 +84,11 @@ To lauch detection:
 
 ## Citation
 
-@misc{matterport_maskrcnn_2017,
+```@misc{matterport_maskrcnn_2017,
   title={Mask R-CNN for object detection and instance segmentation on Keras and TensorFlow},
   author={Waleed Abdulla},
   year={2017},
   publisher={Github},
   journal={GitHub repository},
   howpublished={\url{https://github.com/matterport/Mask_RCNN}},
-}
+}```
