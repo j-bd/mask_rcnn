@@ -5,6 +5,8 @@ Created on Tue Aug 20 15:05:17 2019
 
 @author: j-bd
 """
+import os
+
 import numpy as np
 
 from mrcnn import utils
@@ -23,7 +25,7 @@ class ShipDataset(utils.Dataset):
                                    'EncodedPixels'].tolist()
             self.add_image("ship",
                            image_id=image,
-                           path=dataset_dir+image,
+                           path=os.path.join(dataset_dir, image),
                            width=768,
                            height=768,
                            img_masks=img_masks)

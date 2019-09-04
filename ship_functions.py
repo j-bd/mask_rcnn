@@ -33,14 +33,44 @@ def create_parser():
     parser.add_argument("-pf", "--project_folder", required=True,
                         help="path to your project folder")
     parser.add_argument("-w", "--weights", required=True,
-                        help="Choice between 'coco', 'last', 'imagenet', or"\
-                        "the path to a weights file usedusable by mrcnn algorithm"\
+                        help="Choice between 'coco', 'last', 'imagenet', or "\
+                        "the path to a weights file usedusable by mrcnn algorithm "\
                         "to detect object")
     parser.add_argument("-sr", "--split_rate", type=float, default=0.8,
-                        help="split rate between train and validation dataset during"\
+                        help="split rate between train and validation dataset during "\
                         "mrcnn training")
     args = parser.parse_args()
     return args
+
+
+def check_input(args):
+    '''Check if inputs are correct'''
+    if args.command not in ["train", "detection"]:
+        raise ValueError(
+                "Your choice for '-c', '--command' must be 'train' or 'detection'."
+                )
+    if not os.path.isdir(args.origin_folder):
+        raise FileNotFoundError(
+                "Your choice for '-of', '--origin_folder' is not a valide directory."
+                )
+    if not os.path.isdir(args.project_folder):
+        raise FileNotFoundError(
+                "Your choice for '-of', '--project_folder' is not a valide directory."
+                )
+    if not 0.6 <= args.split_rate <= 0.95:
+        raise ValueError(
+                f"Split rate must be between 0,6 and 0.95, currently {args.split_rate}."
+                )
+    weights = args.weights
+    if not weights.endswith(("coco", "last", "imagenet", ".h5")):
+        raise FileNotFoundError(
+                "Your choice for '-w', '--weights' must be between 'coco', 'last', 'imagenet', or "\
+                "the path to a weights file usedusable by mrcnn algorithm to detect object."
+                )
+    if not os.path.isdir(os.path.join(args.project_folder, "mrcnn")):
+        raise FileNotFoundError(
+                f"Please, clone mrcnn repository in '{args.project_folder}'."
+                )
 
 
 def structure(folder_list):
@@ -53,7 +83,7 @@ def images_transfert(dataset, o_folder, f_folder):
     '''Copy selected images from a folder to another one'''
     filelist = list()
     for image_name in dataset.ImageId.unique():
-        filelist.append(o_folder + image_name)
+        filelist.append(os.path.join(o_folder, image_name))
     print(f"[INFO] Copying of {len(filelist)} images from {o_folder} to "\
           f"{f_folder} on progress. Please wait.")
     for file in filelist:
@@ -79,8 +109,8 @@ def images_copy(csv_file, o_folder, p_folder, percent_images=1, val_size=0.2):
                                                       test_size=val_size*percent_images,
                                                       random_state=42,
                                                       stratify=y)
-    images_transfert(X_train, o_folder, p_folder + "train/")
-    images_transfert(X_val, o_folder, p_folder + "val/")
+    images_transfert(X_train, o_folder, os.path.join(p_folder, "train"))
+    images_transfert(X_val, o_folder, os.path.join(p_folder, "val"))
 
     return X_train, X_val
 
@@ -90,7 +120,7 @@ def weights_selection(proj_dir, choice):
     necessary'''
         # Select weights file to load
     if choice.lower() == "coco":
-        weights_path = proj_dir + "coco_trained_weights.h5"
+        weights_path = os.path.join(proj_dir, "coco_trained_weights.h5")
         # Download weights file
         if not os.path.exists(weights_path):
             utils.download_trained_weights(weights_path)
@@ -129,12 +159,12 @@ def launch_training(dataset_dir, train, val, local_model, config):
     '''Launch Mask RCNN training'''
     # Training dataset.
     dataset_train = ship_dataset.ShipDataset()
-    dataset_train.load_ship(dataset_dir + "train/", train)
+    dataset_train.load_ship(os.path.join(dataset_dir, "train"), train)
     dataset_train.prepare()
 
     # Validation dataset
     dataset_val = ship_dataset.ShipDataset()
-    dataset_val.load_ship(dataset_dir + "val/", val)
+    dataset_val.load_ship(os.path.join(dataset_dir, "val"), val)
     dataset_val.prepare()
 
     # Beginning of the training
@@ -182,7 +212,7 @@ def ship_detection(images_file, images_dir, local_model):
     for image_name in dataset.iloc[:, 0].unique():
         print(f"[INFO]: {count} / {len(dataset.iloc[:, 0].unique())} \n"
               "The following image is analysed:", image_name)
-        image_path = images_dir + image_name
+        image_path = os.path.join(images_dir, image_name)
         image = skimage.io.imread(image_path)
         res_detection = local_model.detect([image], verbose=0)[0]["masks"]
         mask_encoded = mask_analyse(res_detection)
@@ -195,7 +225,7 @@ def ship_detection(images_file, images_dir, local_model):
 def export_result(list_results, folder):
     '''Export results under csv format the results'''
     dataset = pd.DataFrame(np.array(list_results), columns=['ImageId', 'EncodedPixels'])
-    dataset.to_csv(folder + "submission.csv", index=False)
+    dataset.to_csv(os.path.join(folder, "submission.csv"), index=False)
 
 
 def display_elements(im_dir, dataset, im_index):
