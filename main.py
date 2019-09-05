@@ -43,8 +43,8 @@ def training(args):
     )
 
     train_data, val_data = ship_functions.images_copy(
-        file_descr, origin_train_dir, train_image_dir, percent_images=0.02,
-        val_size=1 - args.split_rate
+        file_descr, origin_train_dir, train_image_dir,
+        percent_images=args.images_quantity, val_size=1 - args.split_rate
     )
 
     weight_path = ship_functions.weights_selection(project_dir, args.weights)
@@ -63,10 +63,10 @@ def main():
     args = ship_functions.create_parser()
     ship_functions.check_input(args)
 
-#    if args.command == "train":
-#        training(args)
-#    else:
-#        detection(args)
+    if args.command == "train":
+        training(args)
+    else:
+        detection(args)
 
 
 if __name__ == "__main__":
