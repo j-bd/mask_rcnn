@@ -9,6 +9,8 @@ Created on Thu Aug 15 15:17:19 2019
 
 from mrcnn.config import Config
 
+import constants
+
 class ShipConfig(Config):
     """
     Configuration for training on the ship dataset.
@@ -23,13 +25,13 @@ class ShipConfig(Config):
     # Number of classes (Background + ship)
     NUM_CLASSES = 2
 
-    STEPS_PER_EPOCH = 250
+    STEPS_PER_EPOCH = constants.STEPS_PER_EPOCH
 
     # ROIs below this threshold are skipped
-    DETECTION_MIN_CONFIDENCE = 0.9
+    DETECTION_MIN_CONFIDENCE = constants.DETECTION_MIN_CONFIDENCE
 
     # Non-maximum suppression threshold for detection
-    DETECTION_NMS_THRESHOLD = 0.2
+    DETECTION_NMS_THRESHOLD = constants.DETECTION_NMS_THRESHOLD
 
-    IMAGE_MIN_DIM = 768
-    IMAGE_MAX_DIM = 768
+    IMAGE_MIN_DIM = constants.HEIGHT
+    IMAGE_MAX_DIM = constants.WIDTH
