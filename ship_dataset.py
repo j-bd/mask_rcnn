@@ -70,8 +70,8 @@ class ShipDataset(utils.Dataset):
             dtype=np.uint8
         )
 
-        for index, mask in enumerate(info["img_masks"]):
-            mask_array[:, :, index] = self.mask_creation(mask, shape)
+        for idx, mask in enumerate(info["img_masks"]):
+            mask_array[:, :, idx] = self.mask_creation(mask, shape)
 
         # Mask + class of the Mask (here, we have only one class)
         return mask_array.astype(np.bool), np.ones([mask_array.shape[-1]], dtype=np.int32)
