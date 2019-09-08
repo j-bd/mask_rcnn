@@ -7,8 +7,6 @@ Created on Wed Sep  4 15:26:57 2019
 """
 
 IMAGES_PER_GPU = 1
-# Number of iteration for the training
-EPOCHS = 110
 # Number of training steps per epoch
 STEPS_PER_EPOCH = 250
 # Minimum probability value to accept a detected instance
