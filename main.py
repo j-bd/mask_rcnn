@@ -54,7 +54,7 @@ def training(args):
     )
 
     ship_functions.launch_training(
-        train_image_dir, train_data, val_data, ship_model, config
+        train_image_dir, train_data, val_data, ship_model, config, args
     )
 
 
