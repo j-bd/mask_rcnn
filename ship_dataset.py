@@ -44,13 +44,13 @@ class ShipDataset(utils.Dataset):
 
         # For images with mask_encode (mean presence of object) we need to mark
         # '1' instead of '0' in the array 'img' at the position of the mask.
-        lines = len(mask_encode.split())
+        lines = int(len(mask_encode.split()) / 2)
         starts, lengths = np.hsplit(
             np.fromstring(mask_encode, dtype=int, sep=' ').reshape(lines, 2), 2
         )
         starts -= 1
         ends = starts + lengths
-        for start, end in zip(starts, ends):
+        for start, end in zip(starts.flatten(), ends.flatten()):
             img[start:end] = 1
         return img.reshape(shape).T
 
