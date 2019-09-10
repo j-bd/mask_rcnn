@@ -12,6 +12,11 @@ You will find here a test application of M-RCNN deep learning method to an image
 Mask-RCNN [paper](https://arxiv.org/pdf/1703.06870.pdf) were submit on 20 Mar 2017
 
 
+## Installation
+
+Please, give a look to this author [page](https://github.com/matterport/Mask_RCNN#installation) to know how to install Mask RCNN.
+
+
 ## Data source
 
 I used data made available by airbus on Kaggle. The challenge name is ["Airbus Ship Detection Challenge"](https://www.kaggle.com/c/airbus-ship-detection).
