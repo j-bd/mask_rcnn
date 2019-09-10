@@ -3,7 +3,7 @@
 """
 Created on Wed Sep  4 15:26:57 2019
 
-@author: latitude
+@author: j-bd
 """
 
 IMAGES_PER_GPU = 1
