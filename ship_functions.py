@@ -63,7 +63,7 @@ def check_input(args):
         )
     if not os.path.isdir(args.project_folder):
         raise FileNotFoundError(
-            "Your choice for '-of', '--project_folder' is not a valide directory."
+            "Your choice for '-pf', '--project_folder' is not a valide directory."
         )
     if not 0.6 <= args.split_rate <= 0.95:
         raise ValueError(
