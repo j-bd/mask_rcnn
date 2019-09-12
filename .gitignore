@@ -8,3 +8,4 @@ command_line
 backup_log/*
 results/*
 mrcnn/*
+Mask_RCNN/*
